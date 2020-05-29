@@ -3,12 +3,12 @@ class SessionsController < ApplicationController
   end
 
   def create
-    users = User.find_by(email: params[:session][:email].downcase)
-    if users && users.authenticate(params[:session][:password])
-      if users.activated?
-        log_in users
-        params[:session][:remember_me] == '1' ? remember(users) : forget(users)
-        redirect_to root_url
+    user = User.find_by(email: params[:session][:email].downcase)
+    if user && user.authenticate(params[:session][:password])
+      if user.activated?
+        log_in user
+        params[:session][:remember_me] == '1' ? remember(user) : forget(user)
+        redirect_back_or user
       else
         message = "Account not activated. "
         message += "Check your email for the activation link."
